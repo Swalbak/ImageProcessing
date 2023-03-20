@@ -6,7 +6,8 @@ def my_get_Gaussian2D_mask(msize, sigma=1):
     # ToDo
     # 2D gaussian filter 만들기
     #########################################
-    y, x = np.mgrid[???:???, ???:???]
+    (h, w) = msize
+    y, x = np.mgrid[-(h//2): h//2+1, -(w//2): w//2+1]
     '''
     y, x = np.mgrid[-1:2, -1:2]
     y = [[-1,-1,-1],
@@ -18,9 +19,9 @@ def my_get_Gaussian2D_mask(msize, sigma=1):
     '''
     # 파이 => np.pi 를 쓰시면 됩니다.
     # 2차 gaussian mask 생성
-    gaus2D = ???
+    gaus2D = 1 / (2*np.pi*(sigma ** 2)) * np.exp(-((x**2 + y**2)/(2*(sigma**2))))
     # mask의 총 합 = 1
-    gaus2D /= ???
+    gaus2D /= gaus2D.sum()
 
     return gaus2D
 
@@ -39,10 +40,10 @@ def my_get_Gaussian1D_mask(msize, sigma=1):
     '''
 
     # 파이 => np.pi 를 쓰시면 됩니다.
-    gaus1D = ???
+    gaus1D = 1 / ((np.sqrt(2 * np.pi)) * sigma) * np.exp(-(x**2) / 2 * (sigma**2))
 
     # mask의 총 합 = 1
-    gaus1D /= ???
+    gaus1D /= gaus1D.sum()
     return gaus1D
 
 def my_mask(ftype, fshape, sigma=1):
@@ -52,8 +53,7 @@ def my_mask(ftype, fshape, sigma=1):
         # TODO                                            #
         # mask 완성                                       #
         ###################################################
-        mask = ???
-        mask = ???
+        mask = np.ones(fshape) / (fshape[0] * fshape[1])
 
         #mask 확인
         print(mask)
@@ -67,9 +67,8 @@ def my_mask(ftype, fshape, sigma=1):
 
         base_mask = np.zeros(fshape)
         base_mask[fshape[0]//2, fshape[1]//2] = 2
-        aver_mask = ???
-        aver_mask = ???
-        mask = ???
+        aver_mask = np.ones(fshape) / (fshape[0] * fshape[1])
+        mask = base_mask - aver_mask
 
         #mask 확인
         print(mask)
@@ -112,23 +111,23 @@ def my_filtering(src, mask):
     h, w = src.shape
     m_h, m_w = mask.shape
     pad_img = my_zero_padding(src, (m_h//2, m_w//2))
-    dst = ???
+    dst = np.zeros((h, w))
     
     """
     반복문을 이용하여 filtering을 완성하기
     """
     for row in range(h):
         for col in range(w):
-            val = ???
+            val = (pad_img[row: row+m_h, col: col+m_w] * mask).sum()
             val = np.clip(val, 0, 255) #범위를 0~255로 조정
-            ??? = val
+            dst[row, col] = val
 
     dst = (dst+0.5).astype(np.uint8) #uint8의 형태로 조정
 
     return dst
 
 if __name__ == '__main__':
-    src = cv2.imread('../baby.jpg', cv2.IMREAD_GRAYSCALE)
+    src = cv2.imread('baby.jpg', cv2.IMREAD_GRAYSCALE)
 
     # 3x3 filter
     average_mask = my_mask('average', (3, 3))
