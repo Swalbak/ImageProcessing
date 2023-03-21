@@ -7,7 +7,7 @@ def my_get_Gaussian2D_mask(msize, sigma=1):
     # 2D gaussian filter 만들기
     #########################################
     (h, w) = msize
-    y, x = np.mgrid[-(h//2): h//2+1, -(w//2): w//2+1]
+    y, x = np.mgrid[-(w//2): w//2+1, -(h//2): h//2+1]
     '''
     y, x = np.mgrid[-1:2, -1:2]
     y = [[-1,-1,-1],
@@ -19,9 +19,9 @@ def my_get_Gaussian2D_mask(msize, sigma=1):
     '''
     # 파이 => np.pi 를 쓰시면 됩니다.
     # 2차 gaussian mask 생성
-    gaus2D = 1 / (2*np.pi*(sigma ** 2)) * np.exp(-((x**2 + y**2)/(2*(sigma**2))))
+    gaus2D = 1 / (2 * np.pi * sigma**2) * np.exp(-((x**2 + y**2)/(2 * sigma**2)))
     # mask의 총 합 = 1
-    gaus2D /= gaus2D.sum()
+    gaus2D /= np.sum(gaus2D)
 
     return gaus2D
 
@@ -40,7 +40,7 @@ def my_get_Gaussian1D_mask(msize, sigma=1):
     '''
 
     # 파이 => np.pi 를 쓰시면 됩니다.
-    gaus1D = 1 / ((np.sqrt(2 * np.pi)) * sigma) * np.exp(-(x**2) / 2 * (sigma**2))
+    gaus1D = 1 / (np.sqrt(2 * np.pi) * sigma) * np.exp(-(x**2 / (2 * sigma**2)))
 
     # mask의 총 합 = 1
     gaus1D /= gaus1D.sum()
@@ -108,7 +108,7 @@ def my_filtering(src, mask):
     # dst 완성                                              #
     # dst : filtering 결과 image                            #
     #########################################################
-    h, w = src.shape
+    (h, w) = src.shape
     m_h, m_w = mask.shape
     pad_img = my_zero_padding(src, (m_h//2, m_w//2))
     dst = np.zeros((h, w))
@@ -127,7 +127,7 @@ def my_filtering(src, mask):
     return dst
 
 if __name__ == '__main__':
-    src = cv2.imread('baby.jpg', cv2.IMREAD_GRAYSCALE)
+    src = cv2.imread('./Lena.png', cv2.IMREAD_GRAYSCALE)
 
     # 3x3 filter
     average_mask = my_mask('average', (3, 3))
@@ -156,7 +156,10 @@ if __name__ == '__main__':
     dst_gaussian1d = my_filtering(src, gaussian1d_mask.T)
     dst_gaussian1d = my_filtering(dst_gaussian1d, gaussian1d_mask)
 
-
+    print((dst_gaussian1d != dst_gaussian2d).sum())
+    print(len(src) * len(src[0]))
+    print(dst_gaussian1d[0])
+    print(dst_gaussian2d[0])
     cv2.imshow('original', src)
     cv2.imshow('average filter', dst_average)
     cv2.imshow('sharpening filter', dst_sharpening)
