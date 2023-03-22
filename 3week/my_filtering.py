@@ -7,7 +7,7 @@ def my_get_Gaussian2D_mask(msize, sigma=1):
     # 2D gaussian filter 만들기
     #########################################
     (h, w) = msize
-    y, x = np.mgrid[-(w//2): w//2+1, -(h//2): h//2+1]
+    y, x = np.mgrid[-(h//2): h//2+1, -(w//2): w//2+1]
     '''
     y, x = np.mgrid[-1:2, -1:2]
     y = [[-1,-1,-1],
@@ -130,8 +130,8 @@ if __name__ == '__main__':
     src = cv2.imread('./Lena.png', cv2.IMREAD_GRAYSCALE)
 
     # 3x3 filter
-    average_mask = my_mask('average', (3, 3))
-    sharpening_mask = my_mask('sharpening', (3, 3))
+    average_mask = my_mask('average', (5, 5))
+    sharpening_mask = my_mask('sharpening', (5, 5))
 
     #원하는 크기로 설정
     #dst_average = my_filtering(src, 'average', (5,5))
@@ -148,21 +148,17 @@ if __name__ == '__main__':
     dst_sharpening = my_filtering(src, sharpening_mask)
 
     # Gaussian filter
-    gaussian2d_mask = my_mask('gaussian2D', (3, 3), sigma=1)
-    gaussian1d_mask = my_mask('gaussian1D', 3, sigma=1)
+    gaussian2d_mask = my_mask('gaussian2D', (3, 3), sigma=0.5)
+    gaussian1d_mask = my_mask('gaussian1D', 3, sigma=0.5)
 
     dst_gaussian2d = my_filtering(src, gaussian2d_mask)
 
     dst_gaussian1d = my_filtering(src, gaussian1d_mask.T)
     dst_gaussian1d = my_filtering(dst_gaussian1d, gaussian1d_mask)
 
-    print((dst_gaussian1d != dst_gaussian2d).sum())
-    print(len(src) * len(src[0]))
-    print(dst_gaussian1d[0])
-    print(dst_gaussian2d[0])
-    cv2.imshow('original', src)
-    cv2.imshow('average filter', dst_average)
-    cv2.imshow('sharpening filter', dst_sharpening)
+    # cv2.imshow('original', src)
+    # cv2.imshow('average filter', dst_average)
+    # cv2.imshow('sharpening filter', dst_sharpening)
     cv2.imshow('gaussian2D filter', dst_gaussian2d)
     cv2.imshow('gaussian1D filter', dst_gaussian1d)
     cv2.waitKey()
