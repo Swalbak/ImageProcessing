@@ -156,9 +156,9 @@ if __name__ == '__main__':
     dst_gaussian1d = my_filtering(src, gaussian1d_mask.T)
     dst_gaussian1d = my_filtering(dst_gaussian1d, gaussian1d_mask)
 
-    # cv2.imshow('original', src)
-    # cv2.imshow('average filter', dst_average)
-    # cv2.imshow('sharpening filter', dst_sharpening)
+    cv2.imshow('original', src)
+    cv2.imshow('average filter', dst_average)
+    cv2.imshow('sharpening filter', dst_sharpening)
     cv2.imshow('gaussian2D filter', dst_gaussian2d)
     cv2.imshow('gaussian1D filter', dst_gaussian1d)
     cv2.waitKey()
