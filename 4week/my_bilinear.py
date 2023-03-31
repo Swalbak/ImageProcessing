@@ -3,7 +3,7 @@ import numpy as np
 
 """
 해당 부분에 여러분 정보 입력해주세요.
-00대학교 00학과  2000000 홍길동
+한밭대학교 컴퓨터공학과  20191780 육정훈
 """
 
 def my_bilinear(src, scale):
@@ -23,11 +23,11 @@ def my_bilinear(src, scale):
             y = row / scale
             x = col / scale
 
-            m = ???
-            n = ???
+            m = int(y)
+            n = int(x)
 
-            t = ???
-            s = ???
+            t = y - m
+            s = x - n
 
             """
             픽셀 위치가 이미지를 넘어서는 경우를 막기위해서 조건문을 사용
@@ -38,14 +38,23 @@ def my_bilinear(src, scale):
             3. n+1이 이미지를 넘어서는 경우
             4. 그외
             """
-            value = ???
+            value = None
+
+            if m+1 >= h and n+1 >= w:
+                value = src[h-1, w-1]
+            elif m+1 >= h:
+                value = (1-s)*src[h-1, n] + s*src[h-1, n+1]
+            elif n+1 >= w:
+                value = (1-t)*src[m, w-1] + t*src[m+1, w-1]
+            else:
+                value = s*t*src[m+1, n+1] + t*(1-s)*src[m+1, n] + s*(1-t)*src[m, n+1] + (1-s)*(1-t)*src[m, n]
 
             dst[row, col] = value
 
     return dst
 
 if __name__ == '__main__':
-    src = cv2.imread('../imgs/Lena.png', cv2.IMREAD_GRAYSCALE)
+    src = cv2.imread('Lena.png', cv2.IMREAD_GRAYSCALE)
 
     scale = 3
     #이미지 크기 ??x??로 변경
@@ -57,9 +66,9 @@ if __name__ == '__main__':
     my_dst = my_dst.astype(np.uint8)
 
     # 출력 윈도우에 학번과 이름을 써주시기 바립니다.
-    cv2.imshow('[200000 홍길동]original', src)
-    cv2.imshow('[200000 홍길동]my bilinear mini', my_dst_mini)
-    cv2.imshow('[200000 홍길동]my bilinear', my_dst)
+    cv2.imshow('[20191780 육정훈]original', src)
+    cv2.imshow('[20191780 육정훈]my bilinear mini', my_dst_mini)
+    cv2.imshow('[20191780 육정훈]my bilinear', my_dst)
 
     cv2.waitKey()
     cv2.destroyAllWindows()
