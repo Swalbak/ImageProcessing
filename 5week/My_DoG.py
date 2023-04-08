@@ -4,7 +4,7 @@ import numpy as np
 # library add
 import os, sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from my_filtering_true import my_filtering
+from my_filtering import my_filtering
 
 
 def get_DoG_filter(fsize, sigma=1):
@@ -14,13 +14,13 @@ def get_DoG_filter(fsize, sigma=1):
     ###################################################
     y, x = np.mgrid[-(fsize//2):(fsize//2)+1, -(fsize//2):(fsize//2)+1]
 
-    DoG_x = ???
-    DoG_y = ???
+    DoG_x = (-x / sigma ** 2) * np.exp(-(x ** 2 + y ** 2) / (2 * sigma**2))
+    DoG_y = (-y / sigma ** 2) * np.exp(-(x ** 2 + y ** 2) / (2 * sigma**2))
 
     return DoG_x, DoG_y
 
 def main():
-    src = cv2.imread('../imgs/Lena.png', cv2.IMREAD_GRAYSCALE)
+    src = cv2.imread('Lena.png', cv2.IMREAD_GRAYSCALE)
     DoG_x, DoG_y = get_DoG_filter(fsize=3, sigma=1)
 
     ###################################################
@@ -28,9 +28,9 @@ def main():
     # DoG mask sigma값 조절해서 mask 만들기              #
     ###################################################
     # DoG_x, DoG_y filter 확인
-    x, y = get_DoG_filter(fsize=256, sigma=10)
-    x = ???
-    y = ???
+    x, y = get_DoG_filter(fsize=256, sigma=100)
+    x = ((x - x.min()) / (x - x.min()).max() * 255).astype(np.uint8)
+    y = ((y - y.min()) / (y - y.min()).max() * 255).astype(np.uint8)
 
     dst_x = my_filtering(src, DoG_x)
     dst_y = my_filtering(src, DoG_y)
@@ -39,7 +39,7 @@ def main():
     # TODO                                            #
     # dst_x, dst_y 를 사용하여 magnitude 계산            #
     ###################################################
-    dst = ???
+    dst = np.sqrt((dst_x ** 2 + dst_y ** 2))
 
     """
     한글이나 영어로 작성하기
