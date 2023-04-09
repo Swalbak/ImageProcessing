@@ -32,8 +32,8 @@ def main():
     x = ((x - x.min()) / (x - x.min()).max() * 255).astype(np.uint8)
     y = ((y - y.min()) / (y - y.min()).max() * 255).astype(np.uint8)
 
-    dst_x = my_filtering(src, DoG_x)
-    dst_y = my_filtering(src, DoG_y)
+    dst_x = np.abs(my_filtering(src, DoG_x))
+    dst_y = np.abs(my_filtering(src, DoG_y))
 
     ###################################################
     # TODO                                            #
@@ -42,16 +42,14 @@ def main():
     dst = np.sqrt((dst_x ** 2 + dst_y ** 2))
 
     """
-    한글이나 영어로 작성하기
-    ID, name(학번 이름): 2022012340, Hon Gil Dong    
-    department(학과): computer science
+   
     """
 
-    cv2.imshow('DoG_x filter - 2022012340 Hong Gil Dong', x)
-    cv2.imshow('DoG_y filter - 2022012340 Hong Gil Dong', y)
-    cv2.imshow('dst_x - 2022012340 Hong Gil Dong', dst_x/255)
-    cv2.imshow('dst_y - 2022012340 Hong Gil Dong', dst_y/255)
-    cv2.imshow('dst - 2022012340 Hong Gil Dong', dst/255)
+    cv2.imshow('DoG_x filter', x)
+    cv2.imshow('DoG_y filter', y)
+    cv2.imshow('dst_x ', dst_x/255)
+    cv2.imshow('dst_y', dst_y/255)
+    cv2.imshow('dst', dst/255)
     cv2.waitKey()
     cv2.destroyAllWindows()
 
