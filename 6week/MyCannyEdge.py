@@ -142,6 +142,35 @@ def double_thresholding(src):
                 # TODO                                #
                 # High 값 보다 작고 Low 값 보다 큰 경우   #
                 #######################################
+                dst[row, col] = 128
+    
+    dx = [-1, 0, 1, -1, 0, 1, -1, 0, 1]
+    dy = [-1, -1, -1, 0, 0, 0, 1, 1, 1]
+
+    for row in range(h):
+        for col in range(w):
+            if dst[row, col] == 255 or dst[row, col] == 0:
+                continue
+
+            s = [(row, col)]
+            visited = []
+            isStrong = False
+
+            while len(s) > 0:
+                sh, sw = s.pop()
+                visited.append((sh, sw))
+
+                for i in range(9):
+                    if sw+dx[i] < 0 or sw+dx[i] >= w or sh+dy[i] < 0 or sh+dy[i] >= h:
+                        continue
+
+                    if dst[sh+dy[i], sw+dx[i]] == 255:
+                        isStrong = True
+                    elif dst[sh+dy[i], sw+dx[i]] == 128:
+                        s.append((sh+dy[i], sw+dx[i]))
+            
+            for sh, sw in visited:
+                dst[sh, sw] = isStrong * 255
 
     return dst
 
