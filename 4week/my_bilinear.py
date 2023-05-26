@@ -2,8 +2,7 @@ import cv2
 import numpy as np
 
 """
-해당 부분에 여러분 정보 입력해주세요.
-한밭대학교 컴퓨터공학과  20191780 육정훈
+
 """
 
 def my_bilinear(src, scale):
@@ -86,7 +85,7 @@ def my_nearest(src, scale):
 
 if __name__ == '__main__':
     src = cv2.imread('Lena.png', cv2.IMREAD_GRAYSCALE)
-    cv2.imshow('[20191780 Yuk Jung Hun]original', src)
+    cv2.imshow('original', src)
 
     scale = 3
     #이미지 크기 ??x??로 변경
@@ -98,9 +97,9 @@ if __name__ == '__main__':
     my_dst = my_dst.astype(np.uint8)
 
     # 출력 윈도우에 학번과 이름을 써주시기 바립니다.
-    cv2.imshow('[20191780 Yuk Jung Hun]original', src)
-    cv2.imshow('[20191780 Yuk Jung Hun]my bilinear mini', my_dst_mini)
-    cv2.imshow('[20191780 Yuk Jung Hun]my bilinear', my_dst)
+    cv2.imshow('original', src)
+    cv2.imshow('my bilinear mini', my_dst_mini)
+    cv2.imshow('my bilinear', my_dst)
 
     cv2.waitKey()
     cv2.destroyAllWindows()
